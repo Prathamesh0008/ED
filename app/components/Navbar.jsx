@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Download } from "lucide-react";
 import { useState, useEffect } from "react";
-
 
 import { useCart } from "./CartContext";
 import LoginPopup from "./LoginPopup";
@@ -12,21 +11,20 @@ import LoginPopup from "./LoginPopup";
 /* ================= NAVBAR ================= */
 
 export default function Navbar() {
-useEffect(() => {
-  const storedUser = localStorage.getItem("bio-user");
-  if (storedUser) {
-    const user = JSON.parse(storedUser);
-    setUsername(user.username || user.name || "User");
-  }
-}, []);
-
+  useEffect(() => {
+    const storedUser = localStorage.getItem("bio-user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUsername(user.username || user.name || "User");
+    }
+  }, []);
 
   const router = useRouter();
   const { cartItems } = useCart();
 
   /* ---------- STATES ---------- */
   const [menuOpen, setMenuOpen] = useState(false);
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false); // ✅ ADD
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [username, setUsername] = useState("");
 
@@ -34,24 +32,15 @@ useEffect(() => {
 
   /* ---------- HANDLERS ---------- */
   const handleLoginSuccess = (user) => {
-  // user = { _id, username, email }
-  localStorage.setItem("bio-user", JSON.stringify(user));
-
-  setUsername(user.username || "User");
-  setIsPopupOpen(false);
-};
-
+    localStorage.setItem("bio-user", JSON.stringify(user));
+    setUsername(user.username || "User");
+    setIsPopupOpen(false);
+  };
 
   const handleLogout = () => {
+    localStorage.removeItem("bio-user");
     setUsername("");
     setProfileMenuOpen(false);
-    const handleLogout = () => {
-  localStorage.removeItem("bio-user");
-  setUsername("");
-  setProfileMenuOpen(false);
-  router.push("/");
-};
- // optional but good
     router.push("/");
   };
 
@@ -76,6 +65,16 @@ useEffect(() => {
             <NavLink href="/terms">Terms</NavLink>
             <NavLink href="/contact">Contact</NavLink>
             <NavLink href="/orders">My Orders</NavLink>
+
+            {/* ✅ DOWNLOAD PDF BUTTON */}
+            <a
+              href="/ED.pdf"
+              download
+              className="flex items-center gap-2 px-3 py-1.5 border border-blue-600 text-blue-700 rounded-full hover:bg-blue-50 transition"
+            >
+              <Download size={16} />
+              Download PDF
+            </a>
 
             {/* CART */}
             <button
@@ -174,17 +173,21 @@ useEffect(() => {
               <X size={26} />
             </button>
 
-            {username && (
-              <MobileLink href="/profile" onClick={() => setMenuOpen(false)}>
-                Profile
-              </MobileLink>
-            )}
-
             <MobileLink href="/" onClick={() => setMenuOpen(false)}>Home</MobileLink>
             <MobileLink href="/products" onClick={() => setMenuOpen(false)}>Products</MobileLink>
             <MobileLink href="/about" onClick={() => setMenuOpen(false)}>About</MobileLink>
             <MobileLink href="/contact" onClick={() => setMenuOpen(false)}>Contact</MobileLink>
             <MobileLink href="/orders" onClick={() => setMenuOpen(false)}>My Orders</MobileLink>
+
+            {/* ✅ MOBILE DOWNLOAD */}
+            <a
+              href="/public/ED.pdf"
+              download
+              className="flex items-center gap-2 text-blue-700 font-semibold"
+            >
+              <Download size={18} />
+              Download PDF
+            </a>
 
             {!username && (
               <button

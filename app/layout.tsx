@@ -49,8 +49,18 @@ export default function RootLayout({
           antialiased
         `}
       >
+        {/* SVG Background */}
+  <div
+    className="fixed inset-0 -z-10 opacity-100 "
+    style={{
+      backgroundImage: "url('/bg/ee.svg')",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundSize: "cover",
+    }}
+  />
         {/* GLOBAL BRAND BACKGROUND */}
-        <GlobalBrandBackground />
+        {/* <GlobalBrandBackground /> */}
 
         <CartProvider>
           {/* GLOBAL NAVBAR */}
