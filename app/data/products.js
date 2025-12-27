@@ -11,12 +11,8 @@ export const products = [
     cas_id: "139755-83-2",
     description: "Kamagra 50 mg containing the active ingredient, Sildenafil Citrate is used in the treatment of Erectile Dysfunction and Pulmonary Hypertension.",
     slug: "kamagra-gold-50-mg",
-    image: "/products/kamagra_gold 50mg 02.jpg", // main image C:\Users\AMD\Desktop\Ed_Pharma\public\products\kamagra_gold 50mg 02.jpg
-  // images: [
-  //   "/products/kamagra-gold 50mg 01.jpg",
-  //   "products/kamagra_gold 50mg 02.jpg"],
-    //overview: "Kamagra Gold 50 mg is a medically approved treatment designed to help men experiencing mild to moderate erectile dysfunction (ED). Containing Sildenafil Citrate 50mg, it improves the ability to achieve and maintain a stronger erection during sexual stimulation. This strength is often recommended for men who are trying Sildenafil for the first time or those who do not require a higher dosage. Kamagra Gold works by increasing blood flow to the penile region, allowing improved firmness, better sexual performance, and more satisfaction during intimacy. Manufactured under high-quality pharmaceutical standards, this medicine is widely used worldwide as a cost-effective alternative to Viagra 50mg. It begins working within 30–45 minutes and remains effective for up to 4–5 hours. The formulation is safe when used under proper medical guidance and offers reliable results for most men seeking ED treatment.",
-
+    image: "/products/kamagra_gold 50mg 02.jpg", 
+  
   
 
   overview: [

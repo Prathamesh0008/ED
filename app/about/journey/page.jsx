@@ -1,18 +1,26 @@
 "use client";
 
-import Navbar  from "../../components/Navbar";
+import React from "react";
 import { useRouter } from "next/navigation";
-import ScrollProgressLine from "../../components/ScrollProgressLine";
-import Footer from "../../components/Footer";
-import Offer from "../../components/Offer";
+// 👇 Make sure this path points to your actual Context file
+import { useLanguage } from "../../../context/LanguageContext"; 
 
 export default function JourneyPage() {
   const router = useRouter();
+  const { t } = useLanguage();
+
+  // Access the specific section for this page
+  // Ensure your JSON files (en.js, fr.js, etc.) have the 'journeyPage' key!
+  const content = t.journeyPage;
+
+  // Safety check to prevent crashing if translation is missing
+  if (!content) {
+    return <div className="p-10 text-white">Loading... (Translation data missing)</div>;
+  }
+
   return (
     <div className="relative min-h-screen bg-transparent overflow-hidden">
- <Navbar />
- <ScrollProgressLine/>
- <Offer/>
+      
       {/* Background Image — NO BLUR */}
       <div
         className="pointer-events-none fixed inset-0 -z-10"
@@ -20,7 +28,7 @@ export default function JourneyPage() {
       >
         <img
           src="/ed-pharma/bg4.jpg"
-          alt="Background"
+          alt={content.header.bgImageAlt || "Background"}
           className="w-full h-full object-cover brightness-75"
         />
         {/* LIGHT overlay so image remains visible */}
@@ -28,144 +36,94 @@ export default function JourneyPage() {
       </div>
 
       {/* Foreground content */}
-      <div className="px-4 pt-28 pb-10">
-
+      <div className="px-4 py-10">
         <div className="max-w-5xl mx-auto">
 
           {/* Header */}
           <div className="flex flex-col gap-3 mb-10">
             {/* Back Button */}
+            <button
+              onClick={() => router.back()}
+              className="w-fit flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition"
+            >
+              {/* Note: I removed the manual arrow so RTL languages (Arabic) handle it correctly via the JSON data */}
+              {content.header.back}
+            </button>
 
-            {/* Back Button — FIRST */}
-<button
-  onClick={() => router.back()}
-  className="w-fit flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition"
->
-  ← Back
-</button>
+            {/* Tag */}
+            <span className="inline-flex w-fit items-center gap-2 px-3 py-1 rounded-full bg-[#1c4078] text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg">
+              {content.header.tag}
+            </span>
 
-{/* Tag — BELOW Back button */}
-<span className="inline-flex w-fit items-center gap-2 px-3 py-1 rounded-full bg-[#1c4078] text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg">
-  Europe to Europe
-</span>
-
-
-            {/* Main Title: Pure White with a heavy drop shadow for contrast against background */}
+            {/* Main Title */}
             <h1 className="text-3xl md:text-4xl font-extrabold text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
-              Our Journey
+              {content.header.title}
             </h1>
 
             <p className="text-white font-medium max-w-2xl text-sm md:text-base drop-shadow-md">
-              How ED Pharma evolved into a focused, Europe-to-Europe partner for
-              ED and sexual-health therapies.
+              {content.header.subtitle}
             </p>
           </div>
 
-          {/* Glass Card — MODIFIED: Stronger Blur (3xl) + Translucent White (70%) */}
-          <div className="bg-white/60 backdrop-blur-3xl border border-white/50  shadow-[0_24px_80px_rgba(15,23,42,0.5)] overflow-hidden text-slate-900">
+          {/* Glass Card */}
+          <div className="bg-white/60 backdrop-blur-3xl border border-white/50 shadow-[0_24px_80px_rgba(15,23,42,0.5)] overflow-hidden text-slate-900 rounded-3xl">
 
-            {/* Top Row */}
+            {/* Top Row: Origins + Image */}
             <div className="px-6 md:px-10 pt-8 pb-6 grid md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-8 items-center border-b border-slate-300/60">
               <div>
-                {/* Section Header: Sharp Dark Blue (Logo Color) */}
                 <h2 className="text-3xl font-extrabold text-[#1c4078]">
-                  Origins of ED Pharma
+                  {content.introSection.title}
                 </h2>
-                {/* Paragraph: Dark slate/black for maximum contrast on the milky glass */}
                 <p className="mt-4 text-slate-900 font-medium leading-relaxed text-sm md:text-base">
-                  ED pharma was established with a single objective—create a
-                  reliable, regulated, and consistent Europe-to-Europe supply
-                  chain for erectile-dysfunction and sexual-health pharmaceuticals.
-                  Our model is built specifically for distributors, wholesalers,
-                  telehealth platforms, and licensed pharmacies that require
-                  predictable sourcing, steady stock rotation, and clear
-                  documentation aligned with European expectations.
+                  {content.introSection.paragraph}
                 </p>
               </div>
 
               <div className="flex justify-center md:justify-end">
                 <div className="relative">
-                  {/* Glow matches the brand blue */}
                   <div className="absolute -inset-3 bg-[#3268a0]/20 blur-xl rounded-3xl" />
                   <img
                     src="/ed-pharma/team.jpg"
-                    alt="ED Pharma Team"
+                    alt={content.introSection.imageAlt}
+                    // Fixed Tailwind classes (w-70 -> w-72)
                     className="
-  relative rounded-3xl object-cover border-4 border-white/60 shadow-xl
-  w-70 h-45
-  md:w-52 md:h-52
-  lg:w-64 lg:h-64
-  xl:w-72 xl:h-72
-  transition-all duration-500
-"
-
+                      relative rounded-3xl object-cover border-4 border-white/60 shadow-xl
+                      w-72 h-48
+                      md:w-52 md:h-52
+                      lg:w-64 lg:h-64
+                      xl:w-72 xl:h-72
+                      transition-all duration-500
+                    "
                   />
                 </div>
               </div>
             </div>
 
-            {/* Sections */}
+            {/* Dynamic Sections Loop */}
             <div className="px-6 md:px-10 pb-10 pt-6 space-y-10">
+              {content.sections && content.sections.map((section, index) => (
+                <section key={index}>
+                  <h3 className="text-xl font-bold text-[#3268a0]">
+                    {section.title}
+                  </h3>
+                  <p className="mt-3 text-slate-900 leading-relaxed text-sm md:text-base">
+                    {section.intro}
+                  </p>
+                  
+                  {section.bullets && (
+                    <ul className="mt-4 space-y-2 list-disc ml-5 text-slate-900 font-medium leading-relaxed text-sm md:text-base">
+                      {section.bullets.map((bullet, idx) => (
+                        <li key={idx}>{bullet}</li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              ))}
 
-              <section>
-                {/* Sub-headers: Medium Brand Blue */}
-                <h3 className="text-xl font-bold text-[#3268a0]">
-                  Building a Supplier Network With Depth
-                </h3>
-                <p className="mt-3 text-slate-900 leading-relaxed text-sm md:text-base">
-                  Rather than offering a broad generic catalogue, ED_pharma follows
-                  a specialised vertical model dedicated to ED and related
-                  sexual-health molecules. This tight therapeutic focus enables us
-                  to maintain:
-                </p>
-                <ul className="mt-4 space-y-2 list-disc ml-5 text-slate-900 font-medium leading-relaxed text-sm md:text-base">
-                  <li>Long-term contracts with established GMP-certified manufacturers</li>
-                  <li>Batch-consistent formulation sourcing (Sildenafil, Tadalafil, Avanafil, Vardenafil, Dapoxetine)</li>
-                  <li>Spec-controlled packaging and verified export documentation</li>
-                  <li>Dedicated production planning windows for ED_pharma orders</li>
-                  <li>Predictable MOQ cycles for wholesalers and B2B clients</li>
-                </ul>
-              </section>
-
-              <section>
-                <h3 className="text-xl font-bold text-[#3268a0]">
-                  European Demand, Indian Manufacturing Strength
-                </h3>
-                <p className="mt-3 text-slate-900 leading-relaxed text-sm md:text-base">
-                  The European market continuously demands high-quality ED
-                  formulations with stable supply and compliant packaging.
-                  By combining Indian large-scale pharmaceutical production with
-                  Europe-based logistical operations, ED_pharma ensures:
-                </p>
-                <ul className="mt-4 space-y-2 list-disc ml-5 text-slate-900 font-medium leading-relaxed text-sm md:text-base">
-                  <li>Faster replenishment cycles for wholesalers and pharmacies</li>
-                  <li>Reduced shipping complexity via Europe-to-Europe routing</li>
-                  <li>Lower delays related to customs, port clearance, and long-route freight</li>
-                  <li>Consistent supply for digital healthcare &amp; online clinic partners</li>
-                </ul>
-              </section>
-
-              <section>
-                <h3 className="text-xl font-bold text-[#3268a0]">
-                  Partner-Focused Supply Operations
-                </h3>
-                <p className="mt-3 text-slate-900 leading-relaxed text-sm md:text-base">
-                  Every partner—pharmacy, online clinic, or wholesaler—is assigned
-                  a dedicated supply coordinator responsible for:
-                </p>
-                <ul className="mt-4 space-y-2 list-disc ml-5 text-slate-900 font-medium leading-relaxed text-sm md:text-base">
-                  <li>Forecast-based production alignment</li>
-                  <li>Batch-reservation and short-term stock holding</li>
-                  <li>Portfolio planning for regional demand</li>
-                  <li>Private-label possibilities for certain SKUs</li>
-                </ul>
-              </section>
-
+              {/* Closing Section */}
               <section>
                 <p className="mt-3 text-slate-900 font-bold italic leading-relaxed text-sm md:text-base border-l-4 border-[#1c4078] pl-4">
-                  Our journey continues with a clear mission: strengthen the European
-                  sexual-health supply chain with professionalism, predictable logistics,
-                  and unmatched product depth focused on ED therapies.
+                  {content.closing}
                 </p>
               </section>
 
@@ -173,7 +131,6 @@ export default function JourneyPage() {
           </div>
         </div>
       </div>
-      <Footer/>
     </div>
   );
 }

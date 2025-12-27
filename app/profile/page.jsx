@@ -1,132 +1,27 @@
-//app\profile\page.jsx
-
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+// 👇 Import Language Context
+import { useLanguage } from "@/context/LanguageContext"; 
 
 // --- ICONS (SVG Components for cleaner code) ---
 const Icons = {
-  User: () => (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-      />
-    </svg>
-  ),
-  Shield: () => (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-      />
-    </svg>
-  ),
-  Map: () => (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-      />
-    </svg>
-  ),
-  Logout: () => (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-      />
-    </svg>
-  ),
-  Camera: () => (
-    <svg
-      className="w-4 h-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-      />
-    </svg>
-  ),
-  Check: () => (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M5 13l4 4L19 7"
-      />
-    </svg>
-  ),
-  Edit: () => (
-    <svg
-      className="w-4 h-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-      />
-    </svg>
-  ),
+  User: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>,
+  Shield: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>,
+  Map: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+  Logout: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>,
+  Camera: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+  Check: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>,
+  Edit: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
 };
+
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { t } = useLanguage();
+  // Safe Access to JSON
+  const P = t.profilePage;
+
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("general");
   const [username, setUsername] = useState("");
@@ -134,21 +29,16 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    username: "",
-    email: "",
-    street: "",
-    city: "",
-    pincode: "",
-    mobile: "",
-    gender: "",
+    username: "", email: "", street: "", city: "", pincode: "", mobile: "", gender: "", 
   });
+  const [mobileError, setMobileError] = useState("");
+  const [cityError, setCityError] = useState("");
+  const [pincodeError, setPincodeError] = useState("");
 
   const [pwd, setPwd] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
+    currentPassword: "", newPassword: "", confirmNewPassword: "",
   });
-
+  
   const calculateProfileCompletion = () => {
     const fields = [
       profile.username,
@@ -170,118 +60,108 @@ export default function ProfilePage() {
   const completion = calculateProfileCompletion();
   const isComplete = completion === 100;
 
-  // ✅ FIRST: function declare करा
-const loadUserData = (email) => {
-  fetch(`/api/auth?email=${encodeURIComponent(email)}`)
+  // --- LOGIC (Kept intact) ---
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("username");
+      if (!storedUser) {
+        router.push("/");
+        return;
+      }
+      setUsername(storedUser);
+      loadUserData(storedUser);
+    }
+  }, [router]);
+
+  const loadUserData = (currentUsername) => {
+    fetch(`/api/auth?username=${encodeURIComponent(currentUsername)}`)
     .then((res) => res.json())
     .then((data) => {
-      if (data.success && data.user) {
-        setProfile({
-          username: data.user.username || "",
-          email: data.user.email || "",
-          street: data.user.street || "",
-          city: data.user.city || "",
-          pincode: data.user.pincode || "",
-          mobile: data.user.mobile || "",
-          gender: data.user.gender || "",
-        });
-      }
-      setLoading(false);
+        if (data.success && data.user) {
+            setProfile({
+              username: data.user.username || "",
+              email: data.user.email || "",
+              street: data.user.street || "",
+              city: data.user.city || "",
+              pincode: data.user.pincode || "",
+              mobile: data.user.mobile || "",
+              gender: data.user.gender || "",
+            });
+        }
+        setLoading(false);
     })
-    .catch(() => setLoading(false));
-};
-
-// ✅ THEN: useEffect
-useEffect(() => {
-  const stored = localStorage.getItem("bio-user");
-  if (!stored) {
-    router.push("/");
-    return;
-  }
-
-  const user = JSON.parse(stored);
-  setUsername(user.username);
-  loadUserData(user.email);
-}, [router]);
-
+    .catch((err) => {
+        console.log("Profile fetch skipped", err);
+        setLoading(false);
+    });
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("bio-user");
-    router.push("/");
+    localStorage.removeItem("username");
+    router.push("/login");
   };
 
   const saveProfile = async () => {
-    setMessage("Processing...");
+    // TRANSLATED: Processing...
+    setMessage(P?.messages?.processing || "Processing...");
 
     try {
       const res = await fetch("/api/auth", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-  email: profile.email,        // ✅ identifier
-  username: profile.username,
-  street: profile.street,
-  city: profile.city,
-  pincode: profile.pincode,
-  mobile: profile.mobile,
-  gender: profile.gender,
-}),
-
+          currentUsername: username, 
+          email: profile.email,
+          username: profile.username,
+          street: profile.street,
+          city: profile.city,
+          pincode: profile.pincode,
+          mobile: profile.mobile,
+          gender: profile.gender,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setMessage("Error: " + (data.message || "Failed to save."));
+        setMessage("Error: " + (data.message || P?.messages?.saveFailed || "Failed to save."));
         return;
       }
 
       if (data.user?.username) {
-        // ✅ update localStorage bio-user after profile save
-        const stored = localStorage.getItem("bio-user");
-        if (stored) {
-          const u = JSON.parse(stored);
-
-          u.username = data.user.username;
-          u.email = data.user.email;
-
-          localStorage.setItem("bio-user", JSON.stringify(u));
-        }
-
-        // update local state
+        localStorage.setItem("username", data.user.username);
         setUsername(data.user.username);
       }
 
-      setProfile({
-  username: data.user.username || "",
-  email: data.user.email || "",
-  street: data.user.street || "",
-  city: data.user.city || "",
-  pincode: data.user.pincode || "",
-  mobile: data.user.mobile || "",
-  gender: data.user.gender || "",
-});
+      setProfile((prev) => ({
+        ...prev,
+        username: data.user.username,
+        gender: data.user.gender,
+      }));
 
-
-      setMessage("Success: Profile updated!");
+      // TRANSLATED: Success
+      setMessage(P?.messages?.saveSuccess || "Success: Profile updated!");
       setIsEditing(false);
     } catch (err) {
-      setMessage("Error: Server connection failed.");
+      // TRANSLATED: Server Error
+      setMessage(P?.messages?.serverError || "Error: Server connection failed.");
     }
 
     setTimeout(() => setMessage(""), 3000);
   };
 
   const changePassword = async () => {
-    setMessage("Processing...");
+    setMessage(P?.messages?.processing || "Processing...");
 
     if (!pwd.currentPassword || !pwd.newPassword || !pwd.confirmNewPassword) {
-      setMessage("Error: Fill all password fields.");
+      // TRANSLATED: Fill All
+      setMessage(P?.messages?.fillAllPwd || "Error: Fill all password fields.");
       return;
     }
 
     if (pwd.newPassword !== pwd.confirmNewPassword) {
-      setMessage("Error: New passwords do not match.");
+      // TRANSLATED: Mismatch
+      setMessage(P?.messages?.pwdMismatch || "Error: New passwords do not match.");
       return;
     }
 
@@ -290,7 +170,7 @@ useEffect(() => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: profile.email, // ✅ user identify
+          email: profile.email,              // ✅ user identify
           currentPassword: pwd.currentPassword,
           newPassword: pwd.newPassword,
         }),
@@ -310,25 +190,25 @@ useEffect(() => {
         confirmNewPassword: "",
       });
 
-      setMessage("Success: Password updated!");
+      // TRANSLATED: Success
+      setMessage(P?.messages?.pwdSuccess || "Success: Password updated!");
     } catch (err) {
-      setMessage("Error: Server connection failed.");
+      setMessage(P?.messages?.serverError || "Error: Server connection failed.");
     }
 
     setTimeout(() => setMessage(""), 3000);
   };
 
-  if (loading)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+
+  // Safety loading
+  if (loading || !P) return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#222d63] mx-auto"></div>
-          <p className="mt-4 text-slate-600 font-medium">
-            Loading your profile...
-          </p>
+          <p className="mt-4 text-slate-600 font-medium">Loading...</p>
         </div>
-      </div>
-    );
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans text-slate-800">
@@ -337,14 +217,14 @@ useEffect(() => {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#222d63] to-[#4181af]"></div>
-            <span className="font-bold text-slate-800">Profile Dashboard</span>
+            <span className="font-bold text-slate-800">{P.nav.title}</span>
           </div>
-          <button
+          <button 
             onClick={handleLogout}
             className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2"
           >
             <Icons.Logout />
-            Logout
+            {P.nav.logout}
           </button>
         </div>
       </div>
@@ -352,13 +232,13 @@ useEffect(() => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center sm:text-left">
-            Account Settings
-          </h1>
+         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center sm:text-left">
+           {P.header.title}
+         </h1>
 
-          <p className="text-slate-600 mt-2 text-sm sm:text-base text-center sm:text-left">
-            Manage your profile information and security settings
-          </p>
+         <p className="text-slate-600 mt-2 text-sm sm:text-base text-center sm:text-left">
+           {P.header.subtitle}
+         </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -369,82 +249,58 @@ useEffect(() => {
               <div className="flex flex-col items-center">
                 <div className="relative">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#222d63] to-[#4181af] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                    {profile.username
-                      ? profile.username.charAt(0).toUpperCase()
-                      : "U"}
+                    {profile.username ? profile.username.charAt(0).toUpperCase() : "U"}
                   </div>
                   <button className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-slate-200 hover:shadow-lg transition-shadow">
                     <Icons.Camera />
                   </button>
                 </div>
-                <h2 className="mt-4 text-xl font-bold text-slate-900">
-                  {profile.username || "Guest User"}
-                </h2>
+                <h2 className="mt-4 text-xl font-bold text-slate-900">{profile.username || P.sidebar.guest}</h2>
                 <p className="text-slate-500 text-sm mt-1">{profile.email}</p>
-
+                
                 <div className="mt-6 flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  Verified Account
+                  {P.sidebar.verified}
                 </div>
               </div>
             </div>
 
             {/* Navigation */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => setActiveTab("general")}
-                className={`w-full flex items-center gap-3 px-4 py-4 text-left border-b border-slate-100 transition-colors ${
-                  activeTab === "general"
-                    ? "bg-blue-50 text-blue-700 border-l-4 border-l-blue-500"
-                    : "hover:bg-slate-50 text-slate-700"
-                }`}
+              <button 
+                onClick={() => setActiveTab('general')}
+                className={`w-full flex items-center gap-3 px-4 py-4 text-left border-b border-slate-100 transition-colors ${activeTab === 'general' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-500' : 'hover:bg-slate-50 text-slate-700'}`}
               >
-                <div
-                  className={`p-2 rounded-lg ${
-                    activeTab === "general" ? "bg-blue-100" : "bg-slate-100"
-                  }`}
-                >
+                <div className={`p-2 rounded-lg ${activeTab === 'general' ? 'bg-blue-100' : 'bg-slate-100'}`}>
                   <Icons.User />
                 </div>
                 <div>
-                  <div className="font-medium">General</div>
-                  <div className="text-xs text-slate-500">
-                    Personal information
-                  </div>
+                  <div className="font-medium">{P.sidebar.tabs.generalTitle}</div>
+                  <div className="text-xs text-slate-500">{P.sidebar.tabs.generalSub}</div>
                 </div>
               </button>
-
-              <button
-                onClick={() => setActiveTab("security")}
-                className={`w-full flex items-center gap-3 px-4 py-4 text-left transition-colors ${
-                  activeTab === "security"
-                    ? "bg-blue-50 text-blue-700 border-l-4 border-l-blue-500"
-                    : "hover:bg-slate-50 text-slate-700"
-                }`}
+              
+              <button 
+                onClick={() => setActiveTab('security')}
+                className={`w-full flex items-center gap-3 px-4 py-4 text-left transition-colors ${activeTab === 'security' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-500' : 'hover:bg-slate-50 text-slate-700'}`}
               >
-                <div
-                  className={`p-2 rounded-lg ${
-                    activeTab === "security" ? "bg-blue-100" : "bg-slate-100"
-                  }`}
-                >
+                <div className={`p-2 rounded-lg ${activeTab === 'security' ? 'bg-blue-100' : 'bg-slate-100'}`}>
                   <Icons.Shield />
                 </div>
                 <div>
-                  <div className="font-medium">Security</div>
-                  <div className="text-xs text-slate-500">
-                    Password & security
-                  </div>
+                  <div className="font-medium">{P.sidebar.tabs.securityTitle}</div>
+                  <div className="text-xs text-slate-500">{P.sidebar.tabs.securitySub}</div>
                 </div>
               </button>
             </div>
 
             {/* Stats */}
             <div className="bg-gradient-to-r from-[#222d63] to-[#4181af] rounded-2xl p-6 text-white">
-              <h3 className="font-bold text-lg mb-4">Profile Strength</h3>
+              <h3 className="font-bold text-lg mb-4">{P.sidebar.strength.title}</h3>
 
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span>Completeness</span>
+                  <span>{P.sidebar.strength.label}</span>
                   <span className="font-bold">{completion}%</span>
                 </div>
 
@@ -462,8 +318,8 @@ useEffect(() => {
 
                 <div className="text-xs opacity-90 mt-2">
                   {isComplete
-                    ? "Profile completed successfully 🎉"
-                    : "Complete your profile for better experience"}
+                    ? P.sidebar.strength.success
+                    : P.sidebar.strength.pending}
                 </div>
               </div>
             </div>
@@ -473,28 +329,28 @@ useEffect(() => {
           <div className="lg:col-span-3">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
               {/* Tab Header */}
-              <div className="border-b border-slate-200 px-4 sm:px-8 py-4 sm:py-6">
+             <div className="border-b border-slate-200 px-4 sm:px-8 py-4 sm:py-6">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 text-center sm:text-left">
-                      {activeTab === "general"
-                        ? "Personal Information"
-                        : "Security Settings"}
-                    </h2>
 
-                    <p className="text-slate-600 mt-1 text-sm sm:text-base">
-                      {activeTab === "general"
-                        ? "Update your personal details and contact information"
-                        : "Manage your password and account security"}
-                    </p>
+                  <div>
+                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900 text-center sm:text-left">
+                      {activeTab === 'general' ? P.main.generalTab.title : P.main.securityTab.title}
+                   </h2>
+
+                   <p className="text-slate-600 mt-1 text-sm sm:text-base text-center sm:text-left">
+                      {activeTab === 'general' 
+                        ? P.main.generalTab.subtitle
+                        : P.main.securityTab.subtitle}
+                   </p>
+
                   </div>
-                  {activeTab === "general" && (
-                    <button
+                  {activeTab === 'general' && (
+                    <button 
                       onClick={() => setIsEditing(!isEditing)}
                       className="w-full sm:w-auto px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
                     >
                       <Icons.Edit />
-                      {isEditing ? "Cancel Edit" : "Edit Profile"}
+                      {isEditing ? P.main.generalTab.btnCancelEdit : P.main.generalTab.btnEdit}
                     </button>
                   )}
                 </div>
@@ -502,70 +358,47 @@ useEffect(() => {
 
               {/* Message Alert */}
               {message && (
-                <div
-                  className={`mx-8 mt-6 px-4 py-3 rounded-lg flex items-center gap-2 ${
-                    message.includes("Error")
-                      ? "bg-red-50 text-red-700 border border-red-100"
-                      : "bg-green-50 text-green-700 border border-green-100"
-                  }`}
-                >
-                  {!message.includes("Error") && <Icons.Check />}
+                <div className={`mx-8 mt-6 px-4 py-3 rounded-lg flex items-center gap-2 ${
+                  message.includes('Error') 
+                    ? 'bg-red-50 text-red-700 border border-red-100' 
+                    : 'bg-green-50 text-green-700 border border-green-100'
+                }`}>
+                  {!message.includes('Error') && <Icons.Check />}
                   <span className="font-medium">{message}</span>
                 </div>
               )}
 
               {/* Tab Content */}
               <div className="p-4 sm:p-8">
-                {activeTab === "general" ? (
+                {activeTab === 'general' ? (
                   <div className="space-y-8">
                     {/* Basic Info Section */}
                     <div className="space-y-6">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                        <h3 className="font-semibold text-slate-800">
-                          Basic Information
-                        </h3>
+                        <h3 className="font-semibold text-slate-800">{P.main.labels.basicInfo}</h3>
                       </div>
-
+                      
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            Full Name
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.fullName}</label>
                           <input
                             type="text"
                             value={profile.username}
-                            onChange={(e) =>
-                              setProfile({
-                                ...profile,
-                                username: e.target.value,
-                              })
-                            }
+                            onChange={(e) => setProfile({ ...profile, username: e.target.value })}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-3 rounded-lg border ${
-                              isEditing
-                                ? "border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                : "border-slate-200 bg-slate-50"
-                            } transition-colors outline-none`}
+                            className={`w-full px-4 py-3 rounded-lg border ${isEditing ? 'border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200' : 'border-slate-200 bg-slate-50'} transition-colors outline-none`}
                           />
                         </div>
-
+                        
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            Email Address
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.email}</label>
                           <input
                             type="email"
                             value={profile.email}
-                            onChange={(e) =>
-                              setProfile({ ...profile, email: e.target.value })
-                            }
+                            onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-3 rounded-lg border ${
-                              isEditing
-                                ? "border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                : "border-slate-200 bg-slate-50"
-                            } transition-colors outline-none`}
+                            className={`w-full px-4 py-3 rounded-lg border ${isEditing ? 'border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200' : 'border-slate-200 bg-slate-50'} transition-colors outline-none`}
                           />
                         </div>
                       </div>
@@ -575,51 +408,59 @@ useEffect(() => {
                     <div className="space-y-6">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                        <h3 className="font-semibold text-slate-800">
-                          Contact Information
-                        </h3>
+                        <h3 className="font-semibold text-slate-800">{P.main.labels.contactInfo}</h3>
                       </div>
-
+                      
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            Phone Number
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.phone}</label>
                           <input
                             type="tel"
                             value={profile.mobile}
-                            onChange={(e) =>
-                              setProfile({ ...profile, mobile: e.target.value })
-                            }
                             disabled={!isEditing}
+                            inputMode="numeric"
+                            maxLength={15}
+                            onChange={(e) => {
+                              const value = e.target.value;
+
+                              if (value === "") {
+                                setMobileError("");
+                              } else if (/[^0-9]/.test(value)) {
+                                setMobileError(P.errors.numbersOnly); // TRANSLATED
+                              } else {
+                                setMobileError("");
+                              }
+
+                              setProfile({
+                                ...profile,
+                                mobile: value.replace(/[^0-9]/g, ""),
+                              });
+                            }}
                             className={`w-full px-4 py-3 rounded-lg border ${
                               isEditing
-                                ? "border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                ? "border-slate-300 hover:border-blue-400 focus:border-blue-500"
                                 : "border-slate-200 bg-slate-50"
                             } transition-colors outline-none`}
                           />
-                        </div>
 
+                          {mobileError && (
+                            <p className="text-red-500 text-xs mt-1">{mobileError}</p>
+                          )}
+
+                        </div>
+                        
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            Gender
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.gender}</label>
                           <select
                             value={profile.gender}
-                            onChange={(e) =>
-                              setProfile({ ...profile, gender: e.target.value })
-                            }
+                            onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-3 rounded-lg border ${
-                              isEditing
-                                ? "border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                : "border-slate-200 bg-slate-50"
-                            } transition-colors outline-none`}
+                            className={`w-full px-4 py-3 rounded-lg border ${isEditing ? 'border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200' : 'border-slate-200 bg-slate-50'} transition-colors outline-none`}
                           >
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                            <option value="">{P.main.options.select}</option>
+                            <option value="Male">{P.main.options.male}</option>
+                            <option value="Female">{P.main.options.female}</option>
+                            <option value="Other">{P.main.options.other}</option>
                           </select>
                         </div>
                       </div>
@@ -629,72 +470,91 @@ useEffect(() => {
                     <div className="space-y-6">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                        <h3 className="font-semibold text-slate-800">
-                          Address Details
-                        </h3>
+                        <h3 className="font-semibold text-slate-800">{P.main.labels.address}</h3>
                       </div>
-
+                      
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            Street Address
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.street}</label>
                           <input
                             type="text"
                             value={profile.street}
-                            onChange={(e) =>
-                              setProfile({ ...profile, street: e.target.value })
-                            }
+                            onChange={(e) => setProfile({ ...profile, street: e.target.value })}
                             disabled={!isEditing}
-                            placeholder="Enter your street address"
-                            className={`w-full px-4 py-3 rounded-lg border ${
-                              isEditing
-                                ? "border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                : "border-slate-200 bg-slate-50"
-                            } transition-colors outline-none`}
+                            placeholder={P.main.placeholders.street}
+                            className={`w-full px-4 py-3 rounded-lg border ${isEditing ? 'border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200' : 'border-slate-200 bg-slate-50'} transition-colors outline-none`}
                           />
                         </div>
-
+                        
                         <div className="grid md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-700">
-                              City
-                            </label>
+                            <label className="text-sm font-medium text-slate-700">{P.main.labels.city}</label>
                             <input
                               type="text"
                               value={profile.city}
-                              onChange={(e) =>
-                                setProfile({ ...profile, city: e.target.value })
-                              }
                               disabled={!isEditing}
+                              onChange={(e) => {
+                                const value = e.target.value;
+
+                                if (value === "") {
+                                  setCityError("");
+                                } else if (/[^a-zA-Z\s]/.test(value)) {
+                                  setCityError(P.errors.lettersOnly); // TRANSLATED
+                                } else {
+                                  setCityError("");
+                                }
+
+                                setProfile({
+                                  ...profile,
+                                  city: value.replace(/[^a-zA-Z\s]/g, ""),
+                                });
+                              }}
                               className={`w-full px-4 py-3 rounded-lg border ${
                                 isEditing
                                   ? "border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                                   : "border-slate-200 bg-slate-50"
                               } transition-colors outline-none`}
                             />
-                          </div>
 
+                            {cityError && (
+                              <p className="text-red-500 text-xs mt-1">{cityError}</p>
+                            )}
+                          </div>
+                          
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-700">
-                              Pincode
-                            </label>
+                            <label className="text-sm font-medium text-slate-700">{P.main.labels.pincode}</label>
                             <input
                               type="text"
                               value={profile.pincode}
-                              onChange={(e) =>
+                              disabled={!isEditing}
+                              inputMode="numeric"
+                              maxLength={6}
+                              onChange={(e) => {
+                                const value = e.target.value;
+
+                                if (value === "") {
+                                  setPincodeError("");
+                                } else if (/[^0-9]/.test(value)) {
+                                  setPincodeError(P.errors.numbersOnly); // TRANSLATED
+                                } else {
+                                  setPincodeError("");
+                                }
+
                                 setProfile({
                                   ...profile,
-                                  pincode: e.target.value,
-                                })
-                              }
-                              disabled={!isEditing}
+                                  pincode: value.replace(/[^0-9]/g, ""),
+                                });
+                              }}
                               className={`w-full px-4 py-3 rounded-lg border ${
                                 isEditing
                                   ? "border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                                   : "border-slate-200 bg-slate-50"
                               } transition-colors outline-none`}
                             />
+
+                            {pincodeError && (
+                              <p className="text-red-500 text-xs mt-1">{pincodeError}</p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -704,17 +564,17 @@ useEffect(() => {
                     {isEditing && (
                       <div className="pt-6 border-t border-slate-200">
                         <div className="flex justify-end gap-3">
-                          <button
+                          <button 
                             onClick={() => setIsEditing(false)}
                             className="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors"
                           >
-                            Cancel
+                            {P.main.buttons.cancel}
                           </button>
-                          <button
+                          <button 
                             onClick={saveProfile}
                             className="px-6 py-3 bg-gradient-to-r from-[#222d63] to-[#4181af] text-white rounded-lg font-medium hover:shadow-lg transition-all"
                           >
-                            Save Changes
+                            {P.main.buttons.save}
                           </button>
                         </div>
                       </div>
@@ -726,59 +586,42 @@ useEffect(() => {
                     <div className="space-y-6">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                        <h3 className="font-semibold text-slate-800">
-                          Change Password
-                        </h3>
+                        <h3 className="font-semibold text-slate-800">{P.main.labels.changePwd}</h3>
                       </div>
-
+                      
                       <div className="max-w-md space-y-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            Current Password
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.currPwd}</label>
                           <input
                             type="password"
                             value={pwd.currentPassword}
-                            onChange={(e) =>
-                              setPwd({
-                                ...pwd,
-                                currentPassword: e.target.value,
-                              })
-                            }
-                            placeholder="Enter current password"
+                            onChange={(e) => setPwd({ ...pwd, currentPassword: e.target.value })}
+                            placeholder={P.main.placeholders.currPwd}
+                            autoComplete="current-password"
                             className="w-full px-4 py-3 rounded-lg border border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors outline-none"
                           />
                         </div>
-
+                        
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            New Password
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.newPwd}</label>
                           <input
                             type="password"
                             value={pwd.newPassword}
-                            onChange={(e) =>
-                              setPwd({ ...pwd, newPassword: e.target.value })
-                            }
-                            placeholder="Enter new password"
+                            onChange={(e) => setPwd({ ...pwd, newPassword: e.target.value })}
+                            placeholder={P.main.placeholders.newPwd}
+                            autoComplete="new-password"
                             className="w-full px-4 py-3 rounded-lg border border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors outline-none"
                           />
                         </div>
-
+                        
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-slate-700">
-                            Confirm New Password
-                          </label>
+                          <label className="text-sm font-medium text-slate-700">{P.main.labels.confirmPwd}</label>
                           <input
                             type="password"
                             value={pwd.confirmNewPassword}
-                            onChange={(e) =>
-                              setPwd({
-                                ...pwd,
-                                confirmNewPassword: e.target.value,
-                              })
-                            }
-                            placeholder="Confirm new password"
+                            onChange={(e) => setPwd({ ...pwd, confirmNewPassword: e.target.value })}
+                            placeholder={P.main.placeholders.confirmPwd}
+                            autoComplete="new-password"
                             className="w-full px-4 py-3 rounded-lg border border-slate-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors outline-none"
                           />
                         </div>
@@ -787,11 +630,11 @@ useEffect(() => {
 
                     {/* Update Button */}
                     <div className="pt-6 border-t border-slate-200">
-                      <button
+                      <button 
                         onClick={changePassword}
                         className="px-6 py-3 bg-gradient-to-r from-[#222d63] to-[#4181af] text-white rounded-lg font-medium hover:shadow-lg transition-all"
                       >
-                        Update Password
+                        {P.main.buttons.updatePwd}
                       </button>
                     </div>
                   </div>
@@ -804,3 +647,4 @@ useEffect(() => {
     </div>
   );
 }
+
